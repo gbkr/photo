@@ -1,0 +1,6 @@
+= photo
+
+Describe your project here
+
+:include:photo.rdoc
+
