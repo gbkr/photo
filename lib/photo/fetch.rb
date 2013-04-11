@@ -3,38 +3,48 @@ module Photo
 
     def initialize(options={})
       @settings = options[:settings] || settings
-      fetch_photos
-      fetch_videos
+      puts ""
+      t1 = Time.now
+      fetch source_photos
+      fetch source_videos
+      t2 = Time.now
+      puts ""
+      puts "Completed in #{t2-t1}s."
+      puts ""
     end
 
     private
 
-    def fetch_photos
-      source_photos.each.with_index do |photo, i|
-        # todo: show progess using i
-        fetch_file photo
-      end
-    end 
-
-    def fetch_videos
-      source_videos.each.with_index do |video, i|
-        # todo: show progress with i 
-        fetch_file video
+    def fetch media
+      if media
+        progress_bar = ProgressBar.create(:title => media_type(media.first).capitalize, 
+                                          :total => media.size, 
+                                          :format => '%t |%B| (%C, %p%%)',
+                                          :progress_mark => '.')
+        media.each { |file|
+          fetch_file file
+          progress_bar.increment }
       end
     end
 
     def source_photos
-      Dir.glob("#{@settings[:source]}/**/*.#{@settings[:photo_ext]}")
+      source_files_with_ext @settings[:photo_ext]
     end
 
     def source_videos
-      Dir.glob("#{@settings[:source]}/**/*.#{@settings[:video_ext]}")
+      source_files_with_ext @settings[:video_ext]
     end
 
-    def fetch_file(file)
+    def source_files_with_ext extension
+      Dir.glob("#{@settings[:source]}/**/*.#{extension}")
+    end
+
+    def fetch_file file
       target_location = File.join(@settings[:target], folder_name_for(file))
-      FileUtils.mkdir_p(target_location) unless File.exists?(target_location)
-      FileUtils.cp(file, target_location) 
+      unless File.exists?(File.join(target_location, file))
+        FileUtils.mkdir_p(target_location)
+        FileUtils.cp(file, target_location)  
+      end
     end
 
     def folder_name_for file
@@ -42,13 +52,12 @@ module Photo
       "#{ctime.year.to_s}/#{ctime.strftime('%m %B')}/#{ctime.strftime('%e')}/#{media_type(file)}"
     end
 
-
-    def media_type(file)
+    def media_type file
       File.extname(file) == ".#{@settings[:photo_ext]}" ? 'photos' : 'videos'
     end
 
     def settings
-      YAML.load(Photo::Init::CONFIG_FILE)
+      YAML.load_file(Photo::Init::CONFIG_FILE)
     end
   end
 end
