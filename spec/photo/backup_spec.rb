@@ -32,17 +32,24 @@ module Photo
 
     it 'should keep target files the same' do
       target_before = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
-      Photo::Backup.new(settings)
+      Photo::Backup.new(STDOUT, settings)
       target_after = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
       target_before.should == target_after
     end
 
     it 'should synchronize target and backup' do
-      Photo::Backup.new(settings)
+      Photo::Backup.new(STDOUT, settings)
       target_result = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
       backup_result = Dir.glob("#{backup}/**/*.{#{photo_ext},#{video_ext}}")
       target_result.map { |e| e.gsub(target, backup) }.
         should == backup_result
+    end
+  
+    it 'should notify the user when backups are up-to-date' do
+      output = double('output')
+      output.should_receive(:puts).with('Backup is up-to-date')
+      Photo::Backup.new(STDOUT, settings)
+      Photo::Backup.new(output, settings)
     end
   end
 end

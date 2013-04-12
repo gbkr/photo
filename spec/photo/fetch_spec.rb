@@ -24,7 +24,7 @@ module Photo
     it 'should copy the files from source to target' do
       media = File.join("**", "*.{#{photo_ext},{#{video_ext}")
       initial_target_count = Dir.glob("#{target}/#{media}").size
-      Photo::Fetch.new(settings)
+      Photo::Fetch.new(STDOUT, settings)
       source_count = Dir.glob("#{source}/#{media}").size
       final_target_count = Dir.glob("#{target}/#{media}").size
       final_target_count.should == initial_target_count + source_count
@@ -39,11 +39,18 @@ module Photo
     end
 
     def check_path_for_media_type(extension, directory)
-      Photo::Fetch.new(settings)
+      Photo::Fetch.new(STDOUT, settings)
       file = Dir.glob("#{target}/**/*.#{extension}").first
       d = Date.today
       path = "#{d.year}/#{d.strftime("%m %B")}/#{d.day}/#{directory}"
       file.should match(path)
+    end
+
+    it 'should notify the user if files are up-to-date' do
+      output = double('output')
+      output.should_receive(:puts).with(/[Photos|Video] are up-to-date/).twice
+      Photo::Fetch.new(output, settings)
+      Photo::Fetch.new(output, settings)
     end
   end
 end
