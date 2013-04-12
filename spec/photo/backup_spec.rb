@@ -8,14 +8,21 @@ module Photo
     let(:backup) { settings[:settings][:backup] }
     let(:photo_ext) { settings[:settings][:photo_ext] }
     let(:video_ext) { settings[:settings][:video_ext] }
+    
+    let(:target_test_path) { "#{target}/date/media_type" }
+    let(:backup_test_path) { "#{backup}/date/media_type" }
 
     before(:each) do
       FileUtils.mkdir_p(target)
       FileUtils.mkdir_p(backup)
-      File.new("#{target}/file1.#{photo_ext}", 'w+')
-      File.new("#{target}/file2.#{photo_ext}", 'w+')
+      FileUtils.mkdir_p(target_test_path)
+      FileUtils.mkdir_p(backup_test_path)
+
+      File.new("#{target_test_path}/file1.#{photo_ext}", 'w+')
+      File.new("#{target_test_path}/file2.#{photo_ext}", 'w+')
       File.new("#{target}/file3.#{video_ext}", 'w+')
-      File.new("#{backup}/file1.#{photo_ext}", 'w+')
+    
+      File.new("#{backup_test_path}/file1.#{photo_ext}", 'w+')
     end
 
     after(:each) do
@@ -34,8 +41,8 @@ module Photo
       Photo::Backup.new(settings)
       target_result = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
       backup_result = Dir.glob("#{backup}/**/*.{#{photo_ext},#{video_ext}}")
-      target_result.map {|e| File.basename(e)}.
-        should == backup_result.map {|e| File.basename(e)}
+      target_result.map { |e| e.gsub(target, backup) }.
+        should == backup_result
     end
   end
 end

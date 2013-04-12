@@ -1,15 +1,14 @@
 module Photo
+  require 'photo/timer'
   class Backup
+    include Photo::Timer
 
     def initialize(options={})
       @settings = options[:settings] || settings
-      puts ""
-      t1 = Time.now
-      backup new_files
-      t2 = Time.now
-      puts ""
-      puts "Completed in #{t2-t1}s."
-      puts ""
+      
+      display_and_time do
+        backup new_files
+      end
     end
 
     private
@@ -24,6 +23,8 @@ module Photo
         files.each { |file|
           backup_file file
           progress_bar.increment }
+      else
+        puts "Backup is up-to-date."
       end
     end
 

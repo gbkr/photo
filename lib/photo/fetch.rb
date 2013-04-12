@@ -1,16 +1,15 @@
 module Photo
+  require 'photo/timer'
+
   class Fetch
+    include Photo::Timer
 
     def initialize(options={})
       @settings = options[:settings] || settings
-      puts ""
-      t1 = Time.now
-      fetch source_photos
-      fetch source_videos
-      t2 = Time.now
-      puts ""
-      puts "Completed in #{t2-t1}s."
-      puts ""
+      display_and_time do
+        fetch source_photos
+        fetch source_videos
+      end
     end
 
     private
