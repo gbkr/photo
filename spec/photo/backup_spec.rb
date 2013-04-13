@@ -8,9 +8,10 @@ module Photo
     let(:backup) { settings[:settings][:backup] }
     let(:photo_ext) { settings[:settings][:photo_ext] }
     let(:video_ext) { settings[:settings][:video_ext] }
-    
+
     let(:target_test_path) { "#{target}/date/media_type" }
     let(:backup_test_path) { "#{backup}/date/media_type" }
+
 
     before(:each) do
       FileUtils.mkdir_p(target)
@@ -21,7 +22,7 @@ module Photo
       File.new("#{target_test_path}/file1.#{photo_ext}", 'w+')
       File.new("#{target_test_path}/file2.#{photo_ext}", 'w+')
       File.new("#{target}/file3.#{video_ext}", 'w+')
-    
+
       File.new("#{backup_test_path}/file1.#{photo_ext}", 'w+')
     end
 
@@ -32,24 +33,24 @@ module Photo
 
     it 'should keep target files the same' do
       target_before = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
-      Photo::Backup.new(STDOUT, settings)
+      Photo::Backup.new(STDOUT, settings).backup
       target_after = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
       target_before.should == target_after
     end
 
     it 'should synchronize target and backup' do
-      Photo::Backup.new(STDOUT, settings)
+      Photo::Backup.new(STDOUT, settings).backup
       target_result = Dir.glob("#{target}/**/*.{#{photo_ext},#{video_ext}}")
       backup_result = Dir.glob("#{backup}/**/*.{#{photo_ext},#{video_ext}}")
       target_result.map { |e| e.gsub(target, backup) }.
-        should == backup_result
+      should == backup_result
     end
-  
+
     it 'should notify the user when backups are up-to-date' do
       output = double('output')
       output.should_receive(:puts).with('Backup is up-to-date')
-      Photo::Backup.new(STDOUT, settings)
-      Photo::Backup.new(output, settings)
+      Photo::Backup.new(STDOUT, settings).backup
+      Photo::Backup.new(output, settings).backup
     end
   end
 end

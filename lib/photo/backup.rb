@@ -6,14 +6,17 @@ module Photo
     def initialize(output, options={})
       @settings = options[:settings] || settings
       @output = output
+    end
+
+    def backup
       display_and_time do
-        backup new_files
+        backup_files new_files
       end
     end
 
     private
 
-    def backup files
+    def backup_files files
       if files.empty?
         @output.puts "Backup is up-to-date"
       else
@@ -23,9 +26,9 @@ module Photo
 
     def process files
       progress_bar = ProgressBar.create(:title => "Backing up media",
-                                        :total => files.size, 
-                                        :format => '%t |%B| (%C, %p%%)',
-                                        :progress_mark => '.')
+                                          :total => files.size, 
+                                          :format => '%t |%B| (%C, %p%%)',
+                                          :progress_mark => '.')
 
       files.each { |file|
         backup_file file

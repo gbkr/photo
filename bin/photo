@@ -43,7 +43,8 @@ arg_name 'Describe arguments to fetch here'
 command :fetch do |c|
   c.action do |global_options,options,args|
     begin
-      Photo::Fetch.new(STDOUT)
+      fetcher = Photo::Fetch.new(STDOUT)
+      fetcher.fetch
     rescue => e
       puts e.message
       puts e.backtrace
@@ -55,7 +56,8 @@ desc 'Backup photos by synchronizing to an external drive'
 arg_name 'Describe arguments to backup here'
 command :backup do |c|
   c.action do |global_options,options,args|
-    Photo::Backup.new(STDOUT)
+    backup = Photo::Backup.new(STDOUT)
+    backup.backup
   end
 end
 

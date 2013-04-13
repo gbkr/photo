@@ -7,15 +7,19 @@ module Photo
     def initialize(output, options={})
       @settings = options[:settings] || settings
       @output = output
+    end
+
+    def fetch
+      puts "\nFetching media from camera\n"
       display_and_time do
-        fetch source_photos
-        fetch source_videos
+        fetch_files source_photos
+        fetch_files source_videos
       end
     end
 
     private
 
-    def fetch media
+    def fetch_files media
       if media
         if files_up_to_date? media
           notify_files_up_to_date media_type(media.first).capitalize
@@ -33,7 +37,6 @@ module Photo
       media.each { |file|
         fetch_file file
         progress_bar.increment }
-
     end
 
     def notify_files_up_to_date media_type
@@ -47,9 +50,9 @@ module Photo
     def source_target_hash media
       target_paths = {}
       media.each do |file|
-         target_path =  File.join(@settings[:target], folder_name_for(file))
-         target_paths[:file] = target_path unless File.exists?(target_path)
-       end
+        target_path =  File.join(@settings[:target], folder_name_for(file))
+        target_paths[:file] = target_path unless File.exists?(target_path)
+      end
       target_paths
     end
 
