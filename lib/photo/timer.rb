@@ -1,10 +1,10 @@
 module Photo
   module Timer
-    def display_and_time
+    def display_and_time(stream)
       start_time = Time.now
-      puts ""
+      stream.puts ""
       yield
-      puts "\nFinished in #{(Time.now - start_time).to_time_sentence}\n"
+      stream.puts "\nFinished in #{(Time.now - start_time).to_time_sentence}\n"
     end
   end
 end

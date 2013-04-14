@@ -8,6 +8,7 @@ module Photo
     let(:target) { settings[:settings][:target] }
     let(:photo_ext) { settings[:settings][:photo_ext] }
     let(:video_ext) { settings[:settings][:video_ext] }
+    let(:progress_bar) { ProgressBar.create(:output => File.open(File::NULL, 'w+')) }
 
     before(:each) do
       FileUtils.mkdir_p(source)

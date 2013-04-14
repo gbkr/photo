@@ -4,6 +4,7 @@ module Photo
                                 target: 'tmp/target',
                                 backup: 'tmp/backup',
                                 photo_ext: 'RW2',
-                                video_ext: 'MTS' }}
+                                video_ext: 'MTS',
+                                progress_output: File.new(File::NULL, 'w+')  }}
   end
 end

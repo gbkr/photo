@@ -6,10 +6,11 @@ module Photo
     def initialize(output, options={})
       @settings = options[:settings] || settings
       @output = output
+      @stream = @settings.fetch(:progress_output, STDOUT)
     end
 
     def backup
-      display_and_time do
+      display_and_time(@stream) do
         backup_files new_files
       end
     end
@@ -28,7 +29,8 @@ module Photo
       progress_bar = ProgressBar.create(:title => "Backing up media",
                                           :total => files.size, 
                                           :format => '%t |%B| (%C, %p%%)',
-                                          :progress_mark => '.')
+                                          :progress_mark => '.',
+                                          :output => @settings[:progress_output])
 
       files.each { |file|
         backup_file file

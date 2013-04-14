@@ -44,6 +44,7 @@ PLATFORMS
 
 DEPENDENCIES
   aruba
+  cucumber
   photo!
   rake
   rdoc

@@ -7,11 +7,12 @@ module Photo
     def initialize(output, options={})
       @settings = options[:settings] || settings
       @output = output
+      @stream = @settings.fetch(:progress_output, STDOUT)
     end
 
     def fetch
-      puts "\nFetching media from camera\n"
-      display_and_time do
+      @stream.puts "\nFetching media from camera\n"
+      display_and_time(@stream) do
         fetch_files source_photos
         fetch_files source_videos
       end
@@ -33,7 +34,8 @@ module Photo
       progress_bar = ProgressBar.create(:title => media_type(media.first).capitalize, 
                                         :total => media.size, 
                                         :format => '%t |%B| (%C, %p%%)',
-                                        :progress_mark => '.')
+                                        :progress_mark => '.',
+                                        :output => @settings[:progress_output])
       media.each { |file|
         fetch_file file
         progress_bar.increment }
