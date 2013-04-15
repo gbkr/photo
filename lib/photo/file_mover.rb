@@ -8,15 +8,16 @@ module Photo
 
     def display_and_time
       start_time = Time.now
-      @stream.puts ""
+      @stream.puts
       yield
-      @stream.puts "\nFinished in #{(Time.now - start_time).to_time_sentence}\n\n"
+      @stream.puts "\n Finished in #{(Time.now - start_time).to_time_sentence}\n".color(:yellow)
     end
 
     def progress_bar(title, size)
-      ProgressBar.create(:title => "  #{title}",
+      ProgressBar.create(:title => " #{title}",
                          :total => size, 
-                         :format => '%t |%B| (%C, %p%%)',
+                         #:format => '%t |%B| (%C, %p%%)',
+                         :format => "%t |%B| (#{size.to_s.rjust(4)}, %p%%)",
                          :progress_mark => '.',
                          :output => @settings[:progress_output])
 

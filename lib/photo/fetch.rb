@@ -6,7 +6,7 @@ module Photo
     end
 
     def fetch
-      @stream.puts "\nFetching media from camera\n"
+      @stream.puts "\n Fetching media from camera\n"
       display_and_time do
         fetch_files source_photos
         fetch_files source_videos
@@ -32,7 +32,7 @@ module Photo
     end
 
     def notify_files_up_to_date media_type
-      @output.puts "#{media_type} are up-to-date"
+      @output.puts " #{media_type} are up-to-date".color(:green)
     end
 
     def files_up_to_date? media

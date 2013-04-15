@@ -48,7 +48,7 @@ module Photo
 
     it 'should notify the user when backups are up-to-date' do
       output = double('output')
-      output.should_receive(:puts).with('Backup is up-to-date')
+      output.should_receive(:puts).with(/Backup is up-to-date/)
       Photo::Backup.new(STDOUT, settings).backup
       Photo::Backup.new(output, settings).backup
     end

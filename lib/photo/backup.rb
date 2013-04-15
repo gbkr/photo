@@ -15,7 +15,7 @@ module Photo
 
     def backup_files files
       if files.empty?
-        @output.puts "Backup is up-to-date"
+        @output.puts " Backup is up-to-date".color(:green)
       else
         process files
       end

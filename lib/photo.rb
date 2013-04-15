@@ -10,6 +10,7 @@ require 'fileutils'
 require 'date'
 
 require 'ruby-progressbar'
+require 'rainbow'
 
 class Float
   include Photo::TimeFormatter
