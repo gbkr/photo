@@ -1,16 +1,12 @@
 module Photo
-  require 'photo/timer'
-  class Backup
-    include Photo::Timer
+  class Backup < FileMover
 
     def initialize(output, options={})
-      @settings = options[:settings] || settings
-      @output = output
-      @stream = @settings.fetch(:progress_output, STDOUT)
+      super
     end
 
     def backup
-      display_and_time(@stream) do
+      display_and_time do
         backup_files new_files
       end
     end
@@ -26,15 +22,10 @@ module Photo
     end
 
     def process files
-      progress_bar = ProgressBar.create(:title => "Backing up media",
-                                          :total => files.size, 
-                                          :format => '%t |%B| (%C, %p%%)',
-                                          :progress_mark => '.',
-                                          :output => @settings[:progress_output])
-
+      progress = progress_bar('Backing up media', files.size)
       files.each { |file|
         backup_file file
-        progress_bar.increment }
+        progress.increment }
     end
 
 
@@ -52,10 +43,6 @@ module Photo
       target = Dir.glob("#{@settings[:target]}/#{media}")
       backup = Dir.glob("#{@settings[:backup]}/#{media}")
       target - backup.map { |filename| filename.gsub(@settings[:backup], @settings[:target]) }
-    end
-
-    def settings
-      YAML.load_file(Photo::Init::CONFIG_FILE)
     end
   end
 end

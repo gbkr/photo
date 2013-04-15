@@ -1,5 +1,6 @@
 require 'photo/version'
 require 'photo/init'
+require 'photo/file_mover'
 require 'photo/backup'
 require 'photo/fetch'
 require 'photo/time_formatter'
