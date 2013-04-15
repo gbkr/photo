@@ -1,6 +1,5 @@
 module Photo
   module TimeFormatter
-    require 'ostruct'
 
     def to_time_sentence
       sentence_from float_time
@@ -13,43 +12,24 @@ module Photo
       seconds -= (3600 * hours)
       minutes = seconds / 60
       seconds -= (60 * minutes)
-      OpenStruct.new(hours: hours, minutes: minutes, seconds: seconds)
+      {hour: hours, minute: minutes, second: seconds}
     end 
- 
+
     def sentence_from(time)
-      sentence = ""
-
-      if time.hours > 0
-        hours = time.hours > 1 ? 'hours' : 'hour'
-        sentence << "#{time.hours} #{hours}"
-      end
-
-      if time.minutes > 0
-        sentence << deliminator(time)
-        minutes = time.minutes > 1 ? 'minutes' : 'minute'
-        sentence << "#{time.minutes} #{minutes}"
-      end
-
-      if time.seconds > 0
-        sentence << ' and ' unless sentence.empty?
-        seconds = time.seconds > 1 ? 'seconds' : 'second'
-        sentence << "#{time.seconds} #{seconds}"
-      elsif time.hours == 0 and time.minutes == 0
-        sentence << "#{self.round(4)} seconds"
-      end
-
-      sentence
+      parts = sentence_parts(time)
+      return "#{self.round(4)} seconds" if parts.none?
+      return "#{parts[0]}" if parts.size == 1
+      return parts.join(' and ') if parts.size == 2
+      "#{parts[0]}, #{parts[1]} and #{parts[2]}"
     end
 
+    def sentence_parts(time)
+      time.map { |unit, value| plurality(unit, value) }.compact
+    end
 
-    def deliminator(time)
-      if time.hours > 0 and time.seconds > 0
-        ', '
-      elsif time.hours > 0
-        ' and '
-      else
-        ''
-      end
+    def plurality(key, value)
+      return if value == 0
+      value < 2 ? "#{value} #{key}" : "#{value} #{key}s"
     end
   end
 end
