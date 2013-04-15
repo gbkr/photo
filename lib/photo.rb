@@ -4,7 +4,6 @@ require 'photo/file_mover'
 require 'photo/backup'
 require 'photo/fetch'
 require 'photo/time_formatter'
-require 'photo/timer'
 
 require 'yaml'
 require 'fileutils'
