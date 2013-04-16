@@ -53,5 +53,12 @@ module Photo
       Photo::Fetch.new(output, settings).fetch
       Photo::Fetch.new(output, settings).fetch
     end
+
+    it 'should raise an exception when camera not found' do
+      settings[:settings][:source] = 'tmp/not_found_here'
+      expect { 
+        Photo::Fetch.new(STDOUT, settings)
+      }.to raise_error(/No media found/)
+    end
   end
 end

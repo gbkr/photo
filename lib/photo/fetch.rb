@@ -3,6 +3,7 @@ module Photo
 
     def initialize(output, options={})
       super
+      check_camera_present
     end
 
     def fetch
@@ -14,6 +15,12 @@ module Photo
     end
 
     private
+
+    def check_camera_present
+      unless File.exists?(@settings[:source])
+        raise "\n No media found at #{@settings[:source]}. Please check that your camera or memory card is connected.\n".color(:red)
+      end
+    end
 
     def fetch_files media
       return unless media  

@@ -3,6 +3,7 @@ module Photo
 
     def initialize(output, options={})
       super
+      check_backup_device_present
     end
 
     def backup
@@ -12,6 +13,12 @@ module Photo
     end
 
     private
+
+    def check_backup_device_present
+      unless File.exists?(@settings[:backup])
+        raise "\n No media found at #{@settings[:backup]}. Please check that your storage device is connected.\n".color(:red)
+      end
+    end
 
     def backup_files files
       if files.empty?

@@ -21,7 +21,8 @@ module Photo
       time.map { |unit, value| plurality(unit, value) }.compact
     end
 
-    def float_to_time(seconds=self.to_i)
+    def float_to_time
+      seconds = self.to_i
       hours = seconds / 3600
       seconds -= (3600 * hours)
       minutes = seconds / 60

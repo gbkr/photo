@@ -16,7 +16,6 @@ module Photo
     def progress_bar(title, size)
       ProgressBar.create(:title => " #{title}",
                          :total => size, 
-                         #:format => '%t |%B| (%C, %p%%)',
                          :format => "%t |%B| (#{size.to_s.rjust(4)}, %p%%)",
                          :progress_mark => '.',
                          :output => @settings[:progress_output])

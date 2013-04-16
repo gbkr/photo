@@ -52,5 +52,12 @@ module Photo
       Photo::Backup.new(STDOUT, settings).backup
       Photo::Backup.new(output, settings).backup
     end
+
+    it 'should raise an exception when backup device not found' do
+      settings[:settings][:backup] = 'tmp/nothing_here'
+      expect { 
+        Photo::Backup.new(STDOUT, settings)
+      }.to raise_error(/No media found/)
+    end
   end
 end
