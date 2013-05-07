@@ -58,7 +58,7 @@ module Photo
       settings[:settings][:source] = 'tmp/not_found_here'
       expect { 
         Photo::Fetch.new(STDOUT, settings)
-      }.to raise_error(/No media found/)
+      }.to raise_error(/Nothing found/)
     end
   end
 end

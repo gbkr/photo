@@ -16,7 +16,7 @@ module Photo
 
     def check_backup_device_present
       unless File.exists?(@settings[:backup])
-        raise "\n No media found at #{@settings[:backup]}. Please check that your storage device is connected.\n".color(:red)
+        raise "\n Nothing found at #{@settings[:backup]}. Please check that your storage device is connected.\n".color(:red)
       end
     end
 
@@ -38,11 +38,9 @@ module Photo
 
     def backup_file file
       target = file.gsub(@settings[:target], @settings[:backup])
-      unless File.exists?(target)
-        path = target.split('/')[0..-2].join('/')
-        FileUtils.mkdir_p(path)
-        FileUtils.cp(file, target)
-      end 
+      dirname = File.dirname(target)   
+      FileUtils.mkdir_p(dirname) unless File.exists?(dirname)
+      FileUtils.cp(file, target)
     end
 
     def new_files

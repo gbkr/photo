@@ -57,7 +57,7 @@ module Photo
       settings[:settings][:backup] = 'tmp/nothing_here'
       expect { 
         Photo::Backup.new(STDOUT, settings)
-      }.to raise_error(/No media found/)
+      }.to raise_error(/Nothing found/)
     end
   end
 end

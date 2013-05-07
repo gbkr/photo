@@ -18,41 +18,38 @@ module Photo
 
     def check_camera_present
       unless File.exists?(@settings[:source])
-        raise "\n No media found at #{@settings[:source]}. Please check that your camera or memory card is connected.\n".color(:red)
+        raise "\n Nothing found at #{@settings[:source]}. Please check that your camera or memory card is connected.\n".color(:red)
       end
     end
 
     def fetch_files media
       return unless media  
-      if files_up_to_date? media
+      new_files = filter_duplicated media
+      if new_files.empty?
         notify_files_up_to_date media_type(media.first).capitalize
       else
-        copy_files media  
+        copy_files new_files
       end
     end
 
+    def filter_duplicated media
+      target_paths = {}
+      media.each do |file|
+        target_path = File.join(@settings[:target], folder_name_for(file), File.basename(file))
+        target_paths[file] = target_path unless File.exists?(target_path)
+      end
+      target_paths
+    end 
+
     def copy_files media
-      progress = progress_bar(media_type(media.first).capitalize, media.size)
-      media.each { |file|
-        fetch_file file
+      progress = progress_bar(media_type(media.keys.first).capitalize, media.size)
+      media.each { |file, destination|
+        fetch_file(file, destination)
         progress.increment }
     end
 
     def notify_files_up_to_date media_type
       @output.puts " #{media_type} are up-to-date".color(:green)
-    end
-
-    def files_up_to_date? media
-      source_target_hash(media).empty?
-    end
-
-    def source_target_hash media
-      target_paths = {}
-      media.each do |file|
-        target_path =  File.join(@settings[:target], folder_name_for(file))
-        target_paths[:file] = target_path unless File.exists?(target_path)
-      end
-      target_paths
     end
 
     def source_photos
@@ -67,12 +64,10 @@ module Photo
       Dir.glob("#{@settings[:source]}/**/*.#{extension}")
     end
 
-    def fetch_file file
-      target_location = File.join(@settings[:target], folder_name_for(file))
-      unless File.exists?(File.join(target_location, file))
-        FileUtils.mkdir_p(target_location)
-        FileUtils.cp(file, target_location)  
-      end
+    def fetch_file(file, destination)
+      dirname = File.dirname(destination)
+      FileUtils.mkdir_p(dirname) unless File.exists?(dirname)
+      FileUtils.cp(file, destination)
     end
 
     def folder_name_for file
