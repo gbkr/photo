@@ -16,7 +16,7 @@ class App < Thor
 
   desc 'backup', 'Backup media'
   def backup
-    Photo::Backup.new(STDOUT).fetch
+    Photo::Backup.new(STDOUT).backup
   end
 
   desc 'version', 'Version'
