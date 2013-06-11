@@ -11,6 +11,7 @@ require 'date'
 
 require 'ruby-progressbar'
 require 'rainbow'
+require 'thor'
 
 class Float
   include Photo::TimeFormatter

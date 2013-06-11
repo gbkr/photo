@@ -1,7 +1,7 @@
 module Photo
   class Init
 
-    CONFIG_FILE = File.join(ENV['HOME'], '.photo.yaml')
+    CONFIG_FILE = File.join(ENV['HOME'], '.photo.yml')
 
     def initialize(options={})
       settings = options[:settings] || question_user
@@ -13,22 +13,27 @@ module Photo
     def question_user
       options = {}
 
-      puts "Path to photo source: " 
-      options[:source] = gets.chomp
+      puts "\nPath to photo source: " 
+      options[:source] = user_input
 
-      puts "Path to storage on file system: "
-      options[:target] = gets.chomp
+      puts "\nPath to storage on file system: "
+      options[:target] = user_input
 
-      puts "Path to backup location: "
-      options[:backup] = gets.chomp
+      puts "\nPath to backup location: "
+      options[:backup] = user_input
       
-      puts "Photo file extension: "
-      options[:photo_ext] = gets.chomp
+      puts "\nPhoto file extension: "
+      options[:photo_ext] = user_input
 
-      puts "Video file extension: "
-      options[:video_ext] = gets.chomp
-      
+      puts "\nVideo file extension: "
+      options[:video_ext] = user_input
+     
+      puts "\nConfig saved to #{CONFIG_FILE}\n\n"
       options
+    end
+
+    def user_input
+      STDIN.gets.chomp
     end
 
     def save_configuration(settings)

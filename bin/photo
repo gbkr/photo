@@ -1,54 +1,32 @@
 #!/usr/bin/env ruby
-require 'gli'
 require 'photo'
-include GLI::App
 
-program_desc 'Retrieve, store and backup photos from your digital camera.'
+class App < Thor
+  package_name 'Photo'
 
-version Photo::VERSION
-desc 'Initial configuration'
-command :init do |c|
-  c.action do |global_options,options,args|
+  desc 'init', 'Setup camera, storage and backup locations'
+  def init
     Photo::Init.new
   end
-end
 
-desc 'Retrieve photos from the camera and store them in the file system'
-command :fetch do |c|
-  c.action do |global_options,options,args|
-    fetcher = Photo::Fetch.new(STDOUT)
-    fetcher.fetch
+  desc 'fetch', 'Retrieve media from camera'
+  def fetch
+    Photo::Fetch.new(STDOUT).fetch
+  end
+
+  desc 'backup', 'Backup media'
+  def backup
+    Photo::Backup.new(STDOUT).fetch
+  end
+
+  desc 'version', 'Version'
+  def version
+    puts "Photo #{Photo::VERSION}"
   end
 end
 
-desc 'Backup photos by synchronizing to an external drive'
-command :backup do |c|
-  c.action do |global_options,options,args|
-    backup = Photo::Backup.new(STDOUT)
-    backup.backup
-  end
+begin
+  App.start(ARGV)
+rescue Exception => e
+  puts e.message
 end
-
-pre do |global,command,options,args|
-  # Pre logic here
-  # Return true to proceed; false to abort and not call the
-  # chosen command
-  # Use skips_pre before a command to skip this block
-  # on that command only
-  true
-end
-
-post do |global,command,options,args|
-  # Post logic here
-  # Use skips_post before a command to skip this
-  # block on that command only
-end
-
-on_error do |exception|
-  # Error logic here
-  # return false to skip default error handling
-  puts exception.message
-  false
-end
-
-exit run(ARGV)
