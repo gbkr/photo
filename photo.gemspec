@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.email = 'gba311 at gmail.com'
   s.homepage = ''
   s.platform = Gem::Platform::RUBY
-  s.summary = 'A command line utility to retrieve, categorise, store and backup media from a digital camera.'
+  s.summary = 'A command line utility to retrieve, categorize, store and backup media from a digital camera.'
   s.files = %w(
     bin/photo
     lib/photo/version.rb

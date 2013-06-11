@@ -1,7 +1,7 @@
 Photo
 =====
 
-A command line utility to retrieve, categorise, store and backup
+A command line utility to retrieve, categorize, store and backup
 media from a digital camera.
 
 `photo init` Setup paths to your camera, storage and backup
