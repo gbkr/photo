@@ -32,11 +32,11 @@ module Photo
     end
 
     it 'should place photos into the photo directory' do
-      check_path_for_media_type(photo_ext, 'photos')
+      check_path_for_media_type(photo_ext, 'Photos')
     end
 
     it 'should place videos into the video directory' do
-      check_path_for_media_type(video_ext, 'videos')
+      check_path_for_media_type(video_ext, 'Videos')
     end
 
     def check_path_for_media_type(extension, directory)
@@ -51,6 +51,20 @@ module Photo
       output = double('output')
       output.should_receive(:puts).with(/[Photos|Video] are up-to-date/).twice
       Photo::Fetch.new(output, settings).fetch
+      Photo::Fetch.new(output, settings).fetch
+    end
+
+    it 'should notify the user when no photos are found' do
+      output = double('output')
+      output.should_receive(:puts).with(/No photos found/)
+      File.delete("#{source}/file.#{photo_ext}")
+      Photo::Fetch.new(output, settings).fetch
+    end
+
+    it 'should notify the user when no videos are found' do
+      output = double('output')
+      output.should_receive(:puts).with(/No videos found/)
+      File.delete("#{source}/file.#{video_ext}")
       Photo::Fetch.new(output, settings).fetch
     end
 
