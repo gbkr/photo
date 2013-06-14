@@ -22,6 +22,10 @@ module Photo
       FileUtils.rm_rf(target)
     end
 
+    after(:all) do
+      FileUtils.rm_rf('tmp')
+    end
+
     it 'should copy the files from source to target' do
       media = File.join("**", "*.{#{photo_ext},{#{video_ext}")
       initial_target_count = Dir.glob("#{target}/#{media}").size
